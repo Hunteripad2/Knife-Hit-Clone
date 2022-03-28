@@ -13,7 +13,7 @@ public class KnifeController : MonoBehaviour
 
     private void Start()
     {
-        rb = transform.GetComponent<Rigidbody>();
+        rb = gameObject.GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -28,6 +28,16 @@ public class KnifeController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isStuck && collision.transform.CompareTag("Knife"))
+        {
+            rb.useGravity = true;
+            gameObject.GetComponent<BoxCollider>().enabled = false;
+            //TODO
+        }
+    }
+
     private void OnTriggerEnter(Collider collider)
     {
         if (!isStuck && collider.CompareTag("Log"))
@@ -35,17 +45,6 @@ public class KnifeController : MonoBehaviour
             rb.isKinematic = true;
             transform.SetParent(collider.transform.parent);
             isStuck = true;
-        }
-
-        //this.enabled = false;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!isStuck && collision.transform.CompareTag("Knife"))
-        {
-            rb.useGravity = true;
-            //TODO
         }
     }
 }
