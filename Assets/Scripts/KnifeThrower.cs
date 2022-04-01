@@ -5,6 +5,7 @@ using UnityEngine;
 public class KnifeThrower : MonoBehaviour
 {
     [HideInInspector] private int remainingKnifes;
+    [HideInInspector] private LogController log;
 
     [Header("Knifes")]
     [SerializeField] private GameObject knifePrefab;
@@ -18,6 +19,7 @@ public class KnifeThrower : MonoBehaviour
     private void Start()
     {
         remainingKnifes = knifeAmount;
+        log = GameObject.FindGameObjectWithTag("Log").GetComponent<LogController>();
     }
 
     private void Update()
@@ -35,7 +37,7 @@ public class KnifeThrower : MonoBehaviour
         }
         else
         {
-            //TODO
+            log.CompleteLevel();
         }
     }
 

@@ -40,11 +40,17 @@ public class KnifeController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider)
     {
-        if (!isStuck && collider.CompareTag("Log"))
+        if (collider.CompareTag("Log"))
         {
             rb.isKinematic = true;
-            transform.SetParent(collider.transform.parent);
+            transform.SetParent(collider.transform);
             isStuck = true;
+        }
+        else if (collider.CompareTag("Apple"))
+        {
+            collider.transform.SetParent(null);
+            collider.GetComponent<Rigidbody>().useGravity = true;
+            //TODO
         }
     }
 }

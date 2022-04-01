@@ -6,6 +6,14 @@ public class LogController : MonoBehaviour
 {
     [HideInInspector] private float rotationVelocity;
     [HideInInspector] private float timeTillRotation;
+    [HideInInspector] private Transform rotatingObject;
+
+    [Header("Starting Items")]
+    [SerializeField] private GameObject knifePrefab;
+    [SerializeField] private GameObject applePrefab;
+    [SerializeField] private float appleChance = 0.25f;
+    [SerializeField] private int minKnifes = 1;
+    [SerializeField] private int maxKnifes = 3;
 
     [Header("Behavior")]
     [SerializeField] private float difficulty = 1f;
@@ -13,7 +21,6 @@ public class LogController : MonoBehaviour
     [SerializeField] private float reverseChance = 0.1f;
 
     [Header("Rotation")]
-    [SerializeField] private Transform rotatingObject;
     [SerializeField] private float maxRotationVelocity = 1f;
     [SerializeField] private float accelerationSpeed = 1f;
     [SerializeField] private float rotationCooldown = 2f;
@@ -22,6 +29,9 @@ public class LogController : MonoBehaviour
 
     private void Start()
     {
+        rotatingObject = transform.parent;
+
+        GenerateObjects();
     }
 
     private void Update()
@@ -43,6 +53,33 @@ public class LogController : MonoBehaviour
         RandomizeBehavior();
     }
 
+    private void GenerateObjects()
+    {
+        float randomChance = Random.Range(0f, 1f);
+        float appleAngle = Random.Range(-180f, 180f);
+
+        if (randomChance <= appleChance)
+        {
+            GameObject apple = Instantiate(applePrefab, transform.position, Quaternion.Euler(0f, 0f, appleAngle));
+            apple.transform.SetParent(transform);
+        }
+
+        int knifesAmount = Random.Range(minKnifes, maxKnifes);
+        List<float> knifeAngles = new List<float>();
+
+        while (knifesAmount > 0)
+        {
+            float knifeAngle = Random.Range(-180f, 180f);
+
+            if (knifeAngle != appleAngle && !knifeAngles.Contains(knifeAngle))
+            {
+                GameObject knife = Instantiate(knifePrefab, transform.position, Quaternion.Euler(0f, 0f, knifeAngle));
+                knife.transform.SetParent(transform);
+                knifesAmount--;
+            }
+        }
+    }
+
     private void HandleRotation()
     {
         float targetRotationVelocity = 0f;
@@ -61,22 +98,28 @@ public class LogController : MonoBehaviour
 
         rotationVelocity = Mathf.Lerp(rotationVelocity, targetRotationVelocity, accelerationSpeed * Time.deltaTime);
 
-        rotatingObject.Rotate(Vector3.down, rotationVelocity, Space.Self);
+        rotatingObject.Rotate(Vector3.back, rotationVelocity, Space.Self);
     }
 
     private void RandomizeBehavior()
     {
-        float randomSeed = Random.Range(0f, 100f);
+        float randomChance = Random.Range(0f, 100f);
 
-        if (shouldRotate && randomSeed < stopChance * difficulty)
+        if (shouldRotate && randomChance < stopChance * difficulty)
         {
             shouldRotate = false;
             timeTillRotation = rotationCooldown;
         }
 
-        if (randomSeed < reverseChance * difficulty)
+        if (randomChance < reverseChance * difficulty)
         {
             shouldReverse = !shouldReverse;
         }
+    }
+
+    public void CompleteLevel()
+    {
+        transform.SetParent(null);
+        gameObject.GetComponent<Rigidbody>().useGravity = true;
     }
 }
