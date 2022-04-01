@@ -5,7 +5,6 @@ using UnityEngine;
 public class KnifeThrower : MonoBehaviour
 {
     [HideInInspector] private int remainingKnifes;
-    [HideInInspector] private LogController log;
 
     [Header("Knifes")]
     [SerializeField] private GameObject knifePrefab;
@@ -19,7 +18,6 @@ public class KnifeThrower : MonoBehaviour
     private void Start()
     {
         remainingKnifes = knifeAmount;
-        log = GameObject.FindGameObjectWithTag("Log").GetComponent<LogController>();
     }
 
     private void Update()
@@ -35,16 +33,17 @@ public class KnifeThrower : MonoBehaviour
                 ThrowKnife();
             }
         }
-        else
-        {
-            log.CompleteLevel();
-        }
     }
 
     private void CreateKnife()
     {
         GameObject knife = Instantiate(knifePrefab, newKnifePosition, knifePrefab.transform.rotation, transform);
         currentKnife = knife.GetComponent<KnifeController>();
+
+        if (remainingKnifes == 1)
+        {
+            currentKnife.isLast = true;
+        }
     }
 
     private void ThrowKnife()

@@ -6,7 +6,10 @@ public class LogController : MonoBehaviour
 {
     [HideInInspector] private float rotationVelocity;
     [HideInInspector] private float timeTillRotation;
-    [HideInInspector] private Transform rotatingObject;
+
+    [Header("Log")]
+    [SerializeField] private Transform currentLog;
+    [SerializeField] private Vector3 newLogPosition;
 
     [Header("Starting Items")]
     [SerializeField] private GameObject knifePrefab;
@@ -29,8 +32,6 @@ public class LogController : MonoBehaviour
 
     private void Start()
     {
-        rotatingObject = transform.parent;
-
         GenerateObjects();
     }
 
@@ -60,8 +61,8 @@ public class LogController : MonoBehaviour
 
         if (randomChance <= appleChance)
         {
-            GameObject apple = Instantiate(applePrefab, transform.position, Quaternion.Euler(0f, 0f, appleAngle));
-            apple.transform.SetParent(transform);
+            GameObject apple = Instantiate(applePrefab, currentLog.transform.position, Quaternion.Euler(0f, 0f, appleAngle));
+            apple.transform.SetParent(currentLog.transform);
         }
 
         int knifesAmount = Random.Range(minKnifes, maxKnifes);
@@ -73,8 +74,8 @@ public class LogController : MonoBehaviour
 
             if (knifeAngle != appleAngle && !knifeAngles.Contains(knifeAngle))
             {
-                GameObject knife = Instantiate(knifePrefab, transform.position, Quaternion.Euler(0f, 0f, knifeAngle));
-                knife.transform.SetParent(transform);
+                GameObject knife = Instantiate(knifePrefab, currentLog.transform.position, Quaternion.Euler(0f, 0f, knifeAngle));
+                knife.transform.SetParent(currentLog.transform);
                 knifesAmount--;
             }
         }
@@ -98,7 +99,7 @@ public class LogController : MonoBehaviour
 
         rotationVelocity = Mathf.Lerp(rotationVelocity, targetRotationVelocity, accelerationSpeed * Time.deltaTime);
 
-        rotatingObject.Rotate(Vector3.back, rotationVelocity, Space.Self);
+        transform.Rotate(Vector3.back, rotationVelocity, Space.Self);
     }
 
     private void RandomizeBehavior()
@@ -119,7 +120,11 @@ public class LogController : MonoBehaviour
 
     public void CompleteLevel()
     {
-        transform.SetParent(null);
-        gameObject.GetComponent<Rigidbody>().useGravity = true;
+        currentLog.transform.SetParent(null);
+
+        Rigidbody rb = currentLog.GetComponent<Rigidbody>();
+
+        rb.isKinematic = false;
+        rb.useGravity = true;
     }
 }

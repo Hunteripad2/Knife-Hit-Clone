@@ -186,9 +186,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 62267498}
+  - component: {fileID: 62267499}
   m_Layer: 0
-  m_Name: Rotating Object
-  m_TagString: Untagged
+  m_Name: Log Controller
+  m_TagString: LogController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -208,6 +209,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &62267499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62267497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df3e2a864e831b142a9d766818ca9897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentLog: {fileID: 60484423}
+  newLogPosition: {x: 0, y: 0, z: 0}
+  knifePrefab: {fileID: 2631086408775623192, guid: c627b30b3588a38489ccfaa306722d08, type: 3}
+  applePrefab: {fileID: 1998942852648348, guid: 7cd627a1919ab7748980fbcec674e6a0, type: 3}
+  appleChance: 0.25
+  minKnifes: 1
+  maxKnifes: 3
+  difficulty: 1
+  stopChance: 0.05
+  reverseChance: 0.01
+  maxRotationVelocity: 0.75
+  accelerationSpeed: 1
+  rotationCooldown: 2
+  shouldRotate: 1
+  shouldReverse: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

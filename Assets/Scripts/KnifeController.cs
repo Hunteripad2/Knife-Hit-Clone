@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class KnifeController : MonoBehaviour
 {
+    [HideInInspector] public bool isLast;
+    [HideInInspector] private LogController logController;
     [HideInInspector] private Rigidbody rb;
     [HideInInspector] public bool readyToThrow;
     [HideInInspector] public bool isStuck;
@@ -13,6 +15,7 @@ public class KnifeController : MonoBehaviour
 
     private void Start()
     {
+        logController = GameObject.FindGameObjectWithTag("LogController").GetComponent<LogController>();
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
@@ -45,6 +48,11 @@ public class KnifeController : MonoBehaviour
             rb.isKinematic = true;
             transform.SetParent(collider.transform);
             isStuck = true;
+
+            if (isLast)
+            {
+                logController.CompleteLevel();
+            }
         }
         else if (collider.CompareTag("Apple"))
         {
