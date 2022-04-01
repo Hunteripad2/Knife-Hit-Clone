@@ -41,7 +41,7 @@ public class KnifeThrower : MonoBehaviour
 
     private void CreateKnife()
     {
-        GameObject knife = Instantiate(knifePrefab, newKnifePosition, Quaternion.identity, transform);
+        GameObject knife = Instantiate(knifePrefab, newKnifePosition, knifePrefab.transform.rotation, transform);
         currentKnife = knife.GetComponent<KnifeController>();
     }
 
