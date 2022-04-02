@@ -8,6 +8,8 @@ public class LogController : MonoBehaviour
     [HideInInspector] private float timeTillRotation;
 
     [Header("Log")]
+    [SerializeField] private GameObject logPrefab;
+    [SerializeField] private GameObject logFragmentedPrefab;
     [SerializeField] private Transform currentLog;
     [SerializeField] private Vector3 newLogPosition;
 
@@ -120,11 +122,8 @@ public class LogController : MonoBehaviour
 
     public void CompleteLevel()
     {
-        currentLog.transform.SetParent(null);
-
-        Rigidbody rb = currentLog.GetComponent<Rigidbody>();
-
-        rb.isKinematic = false;
-        rb.useGravity = true;
+        GameObject fragmentedLog = Instantiate(logFragmentedPrefab, currentLog.transform.position, logFragmentedPrefab.transform.rotation);
+        Destroy(fragmentedLog, 2f);
+        Destroy(currentLog.gameObject);
     }
 }
