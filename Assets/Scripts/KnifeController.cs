@@ -5,6 +5,7 @@ using UnityEngine;
 public class KnifeController : MonoBehaviour
 {
     [HideInInspector] public bool isLast;
+    [HideInInspector] public KnifeThrower knifeThrower;
     [HideInInspector] private LogController logController;
     [HideInInspector] private Rigidbody rb;
     [HideInInspector] public bool readyToThrow;
@@ -37,7 +38,7 @@ public class KnifeController : MonoBehaviour
         {
             rb.useGravity = true;
             gameObject.GetComponent<BoxCollider>().enabled = false;
-            //TODO
+            GameObject.FindGameObjectWithTag("UI").GetComponent<UIController>().ShowGameOverScreen();
         }
     }
 
@@ -52,6 +53,7 @@ public class KnifeController : MonoBehaviour
             if (isLast)
             {
                 logController.CompleteLevel();
+                knifeThrower.ReloadKnifeAmount();
             }
         }
         else if (collider.CompareTag("Apple"))

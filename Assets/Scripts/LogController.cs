@@ -6,12 +6,18 @@ public class LogController : MonoBehaviour
 {
     [HideInInspector] private float rotationVelocity;
     [HideInInspector] private float timeTillRotation;
+    [HideInInspector] public int currentLevel = 1;
 
     [Header("Log")]
+    [SerializeField] private bool logIsReady;
     [SerializeField] private GameObject logPrefab;
     [SerializeField] private GameObject logFragmentedPrefab;
     [SerializeField] private Transform currentLog;
     [SerializeField] private Vector3 newLogPosition;
+    [SerializeField] private Vector3 targetLogPosition;
+    [SerializeField] private Quaternion newLogRotation;
+    [SerializeField] private float newLogSpeed = 10f;
+    [SerializeField] private float newLogOffset = 0.1f;
 
     [Header("Starting Items")]
     [SerializeField] private GameObject knifePrefab;
@@ -34,11 +40,18 @@ public class LogController : MonoBehaviour
 
     private void Start()
     {
+        GenerateNewLog();
         GenerateObjects();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
+        if (!logIsReady)
+        {
+            HandlePosition();
+            return;
+        }
+
         if (timeTillRotation > 0f)
         {
             timeTillRotation -= Time.deltaTime;
@@ -48,12 +61,16 @@ public class LogController : MonoBehaviour
             shouldRotate = true;
         }
 
+        RandomizeBehavior();
         HandleRotation();
     }
 
-    private void FixedUpdate()
+    private void GenerateNewLog()
     {
-        RandomizeBehavior();
+        currentLog = Instantiate(logPrefab, newLogPosition, newLogRotation, gameObject.transform).transform;
+        logIsReady = false;
+
+        GenerateObjects();
     }
 
     private void GenerateObjects()
@@ -80,6 +97,19 @@ public class LogController : MonoBehaviour
                 knife.transform.SetParent(currentLog.transform);
                 knifesAmount--;
             }
+        }
+    }
+
+    private void HandlePosition()
+    {
+        if (Mathf.Abs(currentLog.position.y - targetLogPosition.y) > newLogOffset)
+        {
+            currentLog.position = Vector3.Lerp(currentLog.position, targetLogPosition, newLogSpeed * Time.deltaTime);
+        }
+        else
+        {
+            currentLog.position = targetLogPosition;
+            logIsReady = true;
         }
     }
 
@@ -125,5 +155,9 @@ public class LogController : MonoBehaviour
         GameObject fragmentedLog = Instantiate(logFragmentedPrefab, currentLog.transform.position, logFragmentedPrefab.transform.rotation);
         Destroy(fragmentedLog, 2f);
         Destroy(currentLog.gameObject);
+
+        currentLevel++;
+        rotationVelocity = 0f;
+        GenerateNewLog();
     }
 }

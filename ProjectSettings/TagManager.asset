@@ -8,6 +8,7 @@ TagManager:
   - Knife
   - Apple
   - LogController
+  - UI
   layers:
   - Default
   - TransparentFX

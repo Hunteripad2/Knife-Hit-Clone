@@ -25,9 +25,8 @@ public class KnifeThrower : MonoBehaviour
 
     private void Start()
     {
-        remainingKnifes = knifesAmount;
+        ReloadKnifeAmount();
         remainingDeltaColor = remainingMaxColor - remainingMinColor;
-        knifesAmountText.text = knifesAmount.ToString();
     }
 
     private void Update()
@@ -38,7 +37,7 @@ public class KnifeThrower : MonoBehaviour
             {
                 CreateKnife();
             }
-            else if (Input.GetButtonDown("Fire1") && currentKnife.readyToThrow)
+            else if ((Input.GetButtonDown("Fire1") || Input.touches.Length > 0) && currentKnife.readyToThrow)
             {
                 ThrowKnife();
             }
@@ -61,6 +60,7 @@ public class KnifeThrower : MonoBehaviour
     {
         GameObject knife = Instantiate(knifePrefab, newKnifePosition, knifePrefab.transform.rotation, transform);
         currentKnife = knife.GetComponent<KnifeController>();
+        currentKnife.knifeThrower = this;
 
         if (remainingKnifes == 1)
         {
@@ -73,5 +73,11 @@ public class KnifeThrower : MonoBehaviour
         currentKnife.GetComponent<Rigidbody>().AddForce(currentKnife.transform.up * throwForce);
         currentKnife = null;
         remainingKnifes--;
+    }
+
+    public void ReloadKnifeAmount()
+    {
+        remainingKnifes = knifesAmount;
+        UpdateKnifeText();
     }
 }
